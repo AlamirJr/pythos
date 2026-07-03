@@ -670,6 +670,7 @@
     pointer-events:none;
     transition: opacity .25s ease, transform .25s ease;
     box-shadow: 0 10px 30px -8px rgba(0,0,0,0.5);
+    z-index:50;
   }
   .toast.show{
     opacity:1;
@@ -797,6 +798,58 @@
   .credits .role{ color:var(--text-faint); }
   .credits .name{ color:var(--text); font-weight:500; text-align:right; }
 
+  .support{
+    border-top:1px solid var(--border-soft);
+    padding-top:14px;
+    margin-bottom:14px;
+  }
+  .support .support-title{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--text);
+    margin-bottom:3px;
+  }
+  .support .support-sub{
+    font-size:12px;
+    color:var(--text-faint);
+    margin-bottom:10px;
+  }
+  .pix-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--surface-alt);
+    border:1px solid var(--border);
+    border-radius:9px;
+    padding:9px 10px;
+  }
+  .pix-row .pix-key{
+    flex:1;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--text);
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
+  .pix-copy{
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    gap:5px;
+    background:var(--accent-soft);
+    border:1px solid var(--accent-line);
+    color:var(--accent);
+    font-size:11.5px;
+    font-weight:600;
+    padding:6px 10px;
+    border-radius:7px;
+    cursor:pointer;
+    transition: background .2s ease;
+  }
+  .pix-copy:hover{ background:rgba(232,180,76,0.24); }
+  .pix-copy svg{ width:12px; height:12px; }
+
   @media (max-width:400px){
     .toggles{ grid-template-columns:1fr; }
   }
@@ -894,16 +947,27 @@
       </button>
     </div>
 
-    <p>Esta ferramenta gera senhas aleatórias diretamente no seu navegador, sem enviar nenhum dado para servidores externos. Nada do que você digita ou gera aqui sai do seu computador.</p>
-
-    <p><b>Como funciona:</b> ao clicar em <i>Gerar</i>, o app monta um conjunto de caracteres com base nas categorias marcadas (maiúsculas, minúsculas, números e especiais) e sorteia cada posição da senha usando a API <code>crypto.getRandomValues</code> do navegador — o mesmo mecanismo criptográfico usado por sistemas de segurança, em vez de um sorteio comum.</p>
+    <p>Gera senhas aleatórias direto no seu navegador — nada é enviado para servidores externos.</p>
 
     <ul class="modal-list">
-      <li><b>Cobertura garantida:</b> se mais de uma categoria estiver marcada, a senha final sempre contém ao menos um caractere de cada uma.</li>
-      <li><b>Indicador de força:</b> calculado por entropia (tamanho × log₂ do alfabeto usado), exibido em bits e traduzido em um rótulo de fraca a muito forte.</li>
-      <li><b>Caracteres ambíguos:</b> a opção de exclusão remove letras e números fáceis de confundir na leitura, como l, 1, I, O e 0.</li>
-      <li><b>Copiar:</b> usa a área de transferência do próprio navegador; a senha não é armazenada em nenhum lugar.</li>
+      <li><b>Segurança:</b> usa <code>crypto.getRandomValues</code>, o mesmo mecanismo criptográfico de sistemas de segurança.</li>
+      <li><b>Cobertura garantida:</b> com mais de uma categoria marcada, a senha sempre inclui pelo menos um caractere de cada.</li>
+      <li><b>Força:</b> calculada por entropia e mostrada em bits, de fraca a muito forte.</li>
+      <li><b>Ambíguos:</b> a opção de exclusão remove letras/números fáceis de confundir, como l, 1, I, O e 0.</li>
+      <li><b>Copiar:</b> usa a área de transferência do navegador; a senha não fica salva em lugar nenhum.</li>
     </ul>
+
+    <div class="support">
+      <div class="support-title">Apoie o projeto</div>
+      <div class="support-sub">Gostou da ferramenta? Qualquer valor via Pix é bem-vindo.</div>
+      <div class="pix-row">
+        <span class="pix-key" id="pixKey">alamirjr7@protonmail.com</span>
+        <button class="pix-copy" onclick="copiarPix()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copiar
+        </button>
+      </div>
+    </div>
 
     <div class="credits">
       <div class="row"><span class="role">Idealização</span><span class="name">Alamir Rodrigues Rangel Júnior</span></div>
@@ -1035,6 +1099,13 @@
     }
     navigator.clipboard.writeText(senhaAtual)
       .then(() => mostrarToast("Senha copiada"))
+      .catch(() => mostrarToast("Erro ao copiar", true));
+  }
+
+  function copiarPix() {
+    const chave = document.getElementById("pixKey").textContent;
+    navigator.clipboard.writeText(chave)
+      .then(() => mostrarToast("Chave Pix copiada"))
       .catch(() => mostrarToast("Erro ao copiar", true));
   }
 
